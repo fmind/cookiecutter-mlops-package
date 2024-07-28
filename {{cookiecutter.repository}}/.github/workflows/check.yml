@@ -1,0 +1,16 @@
+name: Check
+on:
+  pull_request:
+    branches:
+      - main
+concurrency:
+  cancel-in-progress: true
+  group: {% raw %}${{ github.workflow }}-${{ github.ref }}{% endraw %}
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: poetry install --with checks
+      - run: poetry run invoke checks

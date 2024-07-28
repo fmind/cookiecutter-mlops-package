@@ -1,0 +1,45 @@
+# https://python-poetry.org/docs/pyproject/
+
+# PACKAGE
+
+[tool.poetry]
+name = "cookiecutter-mlops-package"
+version = "0.1.0"
+description = "Build and deploy Python packages for MLOps tasks."
+repository = "https://github.com/fmind/cookiecutter-mlops-package"
+authors = ["Médéric HURIER <github@fmind.dev>"]
+readme = "README.md"
+license = "MIT"
+package-mode = false
+
+# DEPENDENCIES
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+commitizen = "^3.28.0"
+invoke = "^2.2.0"
+pre-commit = "^3.7.1"
+pytest = "^8.3.2"
+pytest-cookies = "^0.7.0"
+pytest-shell-utilities = "^1.9.0"
+
+# CONFIGURATIONS
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_scheme = "pep440"
+version_provider = "poetry"
+update_changelog_on_bump = true
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+
+# SYSTEMS
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

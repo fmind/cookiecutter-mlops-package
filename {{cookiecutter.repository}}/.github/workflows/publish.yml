@@ -1,0 +1,47 @@
+name: Publish
+on:
+  release:
+    types:
+      - edited
+      - published
+env:
+  DOCKER_IMAGE: ghcr.io/{{cookiecutter.user}}/{{cookiecutter.repository}}
+concurrency:
+  cancel-in-progress: true
+  group: publish-workflow
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: poetry install --with docs
+      - run: poetry run invoke docs
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs/
+          branch: gh-pages
+  packages:
+    permissions:
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: poetry install --with dev
+      - run: poetry run invoke packages
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: {% raw %}${{ github.actor }}{% endraw %}
+          password: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: .
+          cache-to: type=gha
+          cache-from: type=gha
+          tags: |
+            {% raw %}${{ env.DOCKER_IMAGE }}:latest{% endraw %}
+            {% raw %}${{ env.DOCKER_IMAGE }}:${{ github.ref_name }}{% endraw %}

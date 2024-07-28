@@ -1,0 +1,23 @@
+name: Tests
+on:
+  pull_request:
+    branches:
+      - main
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+jobs:
+  cookiecutter:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install
+      run: |
+        pipx install poetry
+        poetry install
+    - name: Test
+      run: poetry run pytest tests/

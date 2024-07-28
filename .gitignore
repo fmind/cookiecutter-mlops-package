@@ -1,0 +1,17 @@
+# https://git-scm.com/docs/gitignore
+
+# IDE
+/.idea/
+/.vscode/
+
+# Poetry
+poetry.lock
+
+# Python
+.venv/
+*.py[cod]
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.ipynb_checkpoints/

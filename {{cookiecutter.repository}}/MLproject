@@ -1,0 +1,9 @@
+# https://mlflow.org/docs/latest/projects.html
+
+name: {{cookiecutter.name}}
+python_env: python_env.yaml
+entry_points:
+  main:
+    parameters:
+      job: string
+    command: "PYTHONPATH=src python -m {{cookiecutter.package}} {job}"

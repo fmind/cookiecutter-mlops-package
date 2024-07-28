@@ -1,0 +1,19 @@
+# https://pre-commit.com
+# https://pre-commit.com/hooks.html
+
+default_language_version:
+    python: python3
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+  - repo: https://github.com/python-poetry/poetry
+    rev: 1.8.3
+    hooks:
+    - id: poetry-check
