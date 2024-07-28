@@ -3,11 +3,13 @@
 [![Release](https://img.shields.io/github/v/release/fmind/cookiecutter-mlops-package)](https://github.com/fmind/cookiecutter-mlops-package/releases)
 [![License](https://img.shields.io/github/license/fmind/cookiecutter-mlops-package)](https://github.com/fmind/cookiecutter-mlops-package/blob/main/LICENSE.txt)
 
-**Jumpstart your MLOps projects with this comprehensive Cookiecutter template**.
+**Jumpstart your MLOps projects with this comprehensive [Cookiecutter template](https://cookiecutter.readthedocs.io/)**.
 
-The template provides a robust foundation for building, testing, packaging, and deploying Python packages and Docker Images tailored for MLOps.
+The template provides a robust foundation for building, testing, packaging, and deploying Python packages and Docker Images tailored for MLOps tasks.
 
-You can also leverage the **[MLOps Coding Course](https://mlops-coding-course.fmind.dev/)** to learn about MLOps best practices, and check the **[MLOps Python Package](https://github.com/fmind/mlops-python-package)** for getting started with Predictive ML projects.
+**Related resources**:
+- **[MLOps Coding Course (Learning)](https://mlops-coding-course.fmind.dev/)**: Learn how to create, develop, and maintain a state-of-the-art MLOps code base.
+- **[MLOps Python Package (Example)](https://github.com/fmind/mlops-python-package)**: Kickstart your MLOps initiative with a flexible, robust, and productive Python package.
 
 ## Philosophy
 
@@ -15,19 +17,20 @@ This [Cookiecutter](https://cookiecutter.readthedocs.io/) is designed to be a co
 
 This template equips you with the essentials for creating, testing, and packaging your code, providing a solid base for integration into your chosen platform. To fully leverage its capabilities within a specific environment, you might need to combine it with external tools like [Airflow](https://airflow.apache.org/) for orchestration or platform-specific SDKs for deployment.
 
-You have the freedom to structure your `src/` and `tests/` directories according to your preferences. Alternatively, you can draw inspiration from the structure used in the [MLOps Python Package](https://github.com/fmind/mlops-python-package) project for a ready-made organization.
+You have the freedom to structure your `src/` and `tests/` directories according to your preferences. Alternatively, you can draw inspiration from the structure used in the [MLOps Python Package](https://github.com/fmind/mlops-python-package) project for a ready-made implementation.
 
 ## Key Features
 
 * **Streamlined Project Structure:** A well-defined directory layout for source code, tests, documentation, tasks, and Docker configurations.
-* **Poetry Integration:** Effortless dependency management and packaging with Poetry.
-* **Automated Testing and Checks:** Pre-configured workflows using Pytest, Ruff, Mypy, Bandit, and Coverage to ensure code quality, style, security, and type safety.
-* **Pre-commit Hooks:** Automatic code formatting and linting with Ruff and other pre-commit hooks to maintain consistency.
-* **MLflow Project Ready:** An MLproject file for executing jobs using MLflow, allowing for easy experimentation and tracking.
-* **Dockerized Deployment:** Dockerfile and docker-compose.yml for building and running the package within a containerized environment.
-* **Invoke Task Automation:** PyInvoke tasks to simplify development workflows such as cleaning, installing, formatting, checking, building, documenting, and running MLflow projects.
-* **Comprehensive Documentation:**  pdoc generates API documentation, and Markdown files provide clear usage instructions.
-* **GitHub Workflow Integration:** Continuous integration and deployment workflows are set up using GitHub Actions, automating testing, checks, and publishing.
+* **Poetry Integration:** Effortless dependency management and packaging with [Poetry](https://python-poetry.org/).
+* **Automated Testing and Checks:** Pre-configured workflows using [Pytest](https://docs.pytest.org/), [Ruff](https://docs.astral.sh/ruff/), [Mypy](https://mypy.readthedocs.io/), [Bandit](https://bandit.readthedocs.io/), and [Coverage](https://coverage.readthedocs.io/) to ensure code quality, style, security, and type safety.
+* **Pre-commit Hooks:** Automatic code formatting and linting with [Ruff](https://docs.astral.sh/ruff/) and other pre-commit hooks to maintain consistency.
+* **MLflow Project Ready:** An MLproject file for executing jobs using [MLflow](https://mlflow.org/), allowing for easy experimentation and tracking.
+* **Dockerized Deployment:** Dockerfile and docker-compose.yml for building and running the package within a containerized environment ([Docker](https://www.docker.com/)).
+* **Invoke Task Automation:** [PyInvoke](https://www.pyinvoke.org/) tasks to simplify development workflows such as cleaning, installing, formatting, checking, building, documenting, and running MLflow projects.
+* **Comprehensive Documentation:** [pdoc](https://pdoc.dev/) generates API documentation, and Markdown files provide clear usage instructions.
+* **GitHub Workflow Integration:** Continuous integration and deployment workflows are set up using [GitHub Actions](https://github.com/features/actions), automating testing, checks, and publishing.
+
 
 ## Quick Start
 
@@ -94,7 +97,7 @@ After installing dependencies and setting up MLflow:
 invoke projects
 ```
 
-This will execute the "main" job defined in your `MLproject` file. You can specify different jobs using the `-P job=your_job_name` flag.
+This will execute the "main" job defined in your [`MLproject`](https://github.com/fmind/cookiecutter-mlops-package/blob/main/%7B%7Bcookiecutter.repository%7D%7D/MLproject) file. You can specify different jobs using the `-P job=your_job_name` flag.
 
 ### Building and Running Your Docker Image
 
@@ -102,14 +105,14 @@ This will execute the "main" job defined in your `MLproject` file. You can speci
 invoke containers
 ```
 
-This builds a Docker image based on your `Dockerfile` and runs it. The `CMD` in the Dockerfile executes your package with the `--help` flag.
+This builds a Docker image based on your [`Dockerfile`](https://github.com/fmind/cookiecutter-mlops-package/blob/main/%7B%7Bcookiecutter.repository%7D%7D/Dockerfile) and runs it. The `CMD` in the Dockerfile executes your package with the `--help` flag.
 
 ## Contributions
 
-We welcome contributions to enhance this Cookiecutter template.
+We welcome [contributions](https://github.com/fmind/cookiecutter-mlops-package/blob/main/CODE_OF_CONDUCT.md) to enhance this [Cookiecutter template](https://cookiecutter.readthedocs.io/) for generating MLOps projects.
 
-Feel free to open issues or pull requests for any improvements, bug fixes, or feature requests.
+Feel free to open [issues](https://github.com/fmind/cookiecutter-mlops-package/issues) or [pull requests](https://github.com/fmind/cookiecutter-mlops-package/pulls) for any improvements, bug fixes, or feature requests.
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE.txt` file for details.
+This project is licensed under the [MIT License](https://opensource.org/license/mit). See the [`LICENSE.txt`](https://github.com/fmind/cookiecutter-mlops-package/blob/main/LICENSE.txt) file for details.
