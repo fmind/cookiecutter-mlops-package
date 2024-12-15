@@ -26,7 +26,6 @@ You have the freedom to structure your `src/` and `tests/` directories according
 * **Uv Integration:** Effortless dependency management and packaging with [uv](https://docs.astral.sh/uv/).
 * **Automated Testing and Checks:** Pre-configured workflows using [Pytest](https://docs.pytest.org/), [Ruff](https://docs.astral.sh/ruff/), [Mypy](https://mypy.readthedocs.io/), [Bandit](https://bandit.readthedocs.io/), and [Coverage](https://coverage.readthedocs.io/) to ensure code quality, style, security, and type safety.
 * **Pre-commit Hooks:** Automatic code formatting and linting with [Ruff](https://docs.astral.sh/ruff/) and other pre-commit hooks to maintain consistency.
-* **MLflow Project Ready:** An MLproject file for executing jobs using [MLflow](https://mlflow.org/), allowing for easy experimentation and tracking.
 * **Dockerized Deployment:** Dockerfile and docker-compose.yml for building and running the package within a containerized environment ([Docker](https://www.docker.com/)).
 * **Invoke Task Automation:** [PyInvoke](https://www.pyinvoke.org/) tasks to simplify development workflows such as cleaning, installing, formatting, checking, building, documenting, and running MLflow projects.
 * **Comprehensive Documentation:** [pdoc](https://pdoc.dev/) generates API documentation, and Markdown files provide clear usage instructions.
@@ -74,7 +73,6 @@ git init
 - `tasks/`: PyInvoke tasks for automation.
 - `Dockerfile`: Configuration for building your Docker image.
 - `docker-compose.yml`: Orchestration file for running MLflow and your project.
-- `MLproject`: MLflow project definition.
 
 5. **Start developing!**
 
@@ -98,7 +96,7 @@ After installing dependencies and setting up MLflow:
 invoke projects
 ```
 
-This will execute the default jobs defined in your [`MLproject`](https://github.com/fmind/cookiecutter-mlops-package/blob/main/%7B%7Bcookiecutter.repository%7D%7D/MLproject) file. You can specify different jobs using the `-P job=your_job_name` flag.
+This will execute the job with the configuration file in your `confs` folder.
 
 ### Building and Running Your Docker Image
 

@@ -50,11 +50,8 @@ def environment(ctx: Context) -> None:
 
 @task
 def run(ctx: Context, job: str) -> None:
-    """Run an mlflow project from the MLproject file."""
-    ctx.run(
-        f"uv run mlflow run --experiment-name={ctx.project.repository}"
-        f" --run-name={job.capitalize()} -P conf_file=confs/{job}.yaml ."
-    )
+    """Run the project for the given job file."""
+    ctx.run(f"uv run {ctx.project.repository} confs/{job}.yaml")
 
 
 @task(
