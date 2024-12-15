@@ -29,9 +29,6 @@ dev = [
 [tool.uv]
 package = false
 
-[tool.bandit]
-targets = ["src"]
-
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "v$version"
