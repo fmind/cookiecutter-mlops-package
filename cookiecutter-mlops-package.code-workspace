@@ -13,7 +13,8 @@
     },
     "extensions": {
         "recommendations": [
-            "ms-python.python",
+			"dchanco.vsc-invoke",
+            "ms-python.python"
         ]
     }
 }

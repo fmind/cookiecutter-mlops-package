@@ -1,6 +1,6 @@
 # https://docs.docker.com/engine/reference/builder/
 
-FROM python:{{cookiecutter.python_version}}
+FROM ghcr.io/astral-sh/uv:python{{cookiecutter.python_version}}-bookworm
 COPY dist/*.whl .
-RUN pip install *.whl
+RUN uv pip install --system *.whl
 CMD ["{{cookiecutter.repository}}", "--help"]

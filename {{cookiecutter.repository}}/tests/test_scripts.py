@@ -4,6 +4,7 @@ from {{cookiecutter.package}} import scripts
 
 # %% FUNCTIONS
 
+
 def test_main() -> None:
     # given
     argv = ["x", "y", "z"]

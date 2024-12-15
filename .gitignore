@@ -4,9 +4,6 @@
 /.idea/
 /.vscode/
 
-# Poetry
-poetry.lock
-
 # Python
 .venv/
 *.py[cod]

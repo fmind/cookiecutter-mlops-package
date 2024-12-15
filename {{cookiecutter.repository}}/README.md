@@ -10,14 +10,14 @@
 
 # Installation
 
-Use the package manager [Poetry](https://python-poetry.org/):
+Use the package manager [uv](https://docs.astral.sh/uv/):
 
 ```bash
-poetry install
+uv sync
 ```
 
 # Usage
 
 ```bash
-poetry run {{cookiecutter.repository}}
+uv run {{cookiecutter.repository}}
 ```
