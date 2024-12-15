@@ -1,45 +1,44 @@
-# https://python-poetry.org/docs/pyproject/
+# https://docs.astral.sh/uv/reference/settings/
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 
-# PACKAGE
+# PROJECT
 
-[tool.poetry]
+[project]
 name = "cookiecutter-mlops-package"
 version = "1.0.0"
-description = "Build and deploy Python packages and Docker images for MLOps tasks."
-repository = "https://github.com/fmind/cookiecutter-mlops-package"
-authors = ["Médéric HURIER <github@fmind.dev>"]
+description = "Build and deploy Python packages and Docker images for MLOps projects."
+authors = [{ name = "Médéric HURIER", email = "github@fmind.dev" }]
 readme = "README.md"
-license = "MIT"
-package-mode = false
+requires-python = ">=3.12"
+license = { file = "LICENSE.txt" }
 
 # DEPENDENCIES
 
-[tool.poetry.dependencies]
-python = "^3.12"
+[dependency-groups]
+dev = [
+    "commitizen>=4.1.0",
+    "invoke>=2.2.0",
+    "pre-commit>=4.0.1",
+    "pytest>=8.3.4",
+    "pytest-cookies>=0.7.0",
+    "pytest-shell-utilities>=1.9.7",
+]
 
-[tool.poetry.group.dev.dependencies]
-commitizen = "^3.28.0"
-invoke = "^2.2.0"
-pre-commit = "^3.7.1"
-pytest = "^8.3.2"
-pytest-cookies = "^0.7.0"
-pytest-shell-utilities = "^1.9.0"
+# TOOLS
 
-# CONFIGURATIONS
+[tool.uv]
+package = false
+
+[tool.bandit]
+targets = ["src"]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "v$version"
 version_scheme = "pep440"
-version_provider = "poetry"
+version_provider = "pep621"
 update_changelog_on_bump = true
 
 [tool.pytest.ini_options]
 log_cli = true
 log_cli_level = "INFO"
-
-# SYSTEMS
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"

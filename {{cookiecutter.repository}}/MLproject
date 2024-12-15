@@ -5,5 +5,5 @@ python_env: python_env.yaml
 entry_points:
   main:
     parameters:
-      job: string
-    command: "PYTHONPATH=src python -m {{cookiecutter.package}} {job}"
+      conf_file: path
+    command: "PYTHONPATH=src python -m {{cookiecutter.package}} {conf_file}"

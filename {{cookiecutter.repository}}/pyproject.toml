@@ -1,54 +1,57 @@
-# https://python-poetry.org/docs/pyproject/
+# https://docs.astral.sh/uv/reference/settings/
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 
 # PROJECT
 
-[tool.poetry]
+[project]
 name = "{{cookiecutter.repository}}"
 version = "{{cookiecutter.version}}"
 description = "{{cookiecutter.description}}"
-repository = "https://github.com/{{cookiecutter.user}}/{{cookiecutter.repository}}"
-documentation = "https://{{cookiecutter.user}}.github.io/{{cookiecutter.repository}}/"
-authors = ["{{cookiecutter.user}}"]
+authors = [{ name = "{{cookiecutter.user}}" }]
 readme = "README.md"
-license = "{{cookiecutter.license}}"
-packages = [{ include = "{{cookiecutter.package}}", from = "src" }]
+requires-python = ">={{cookiecutter.python_version}}"
+dependencies = [
+    "mlflow>={{cookiecutter.mlflow_version}}",
+]
+license = { file = "LICENSE.txt" }
+keywords = ["mlops", "python", "package"]
+
+# LINKS
+
+[project.urls]
+Homepage = "https://github.com/{{cookiecutter.user}}/{{cookiecutter.repository}}"
+Documentation = "https://{{cookiecutter.user}}.github.io/{{cookiecutter.repository}}/"
+Repository = "https://github.com/{{cookiecutter.user}}/{{cookiecutter.repository}}e"
+"Bug Tracker" = "https://github.com/{{cookiecutter.user}}/{{cookiecutter.repository}}/issues"
+Changelog = "https://github.com/{{cookiecutter.user}}/{{cookiecutter.repository}}/blob/main/CHANGELOG.md"
 
 # SCRIPTS
 
-[tool.poetry.scripts]
+[project.scripts]
 {{cookiecutter.repository}} = "{{cookiecutter.package}}.scripts:main"
 
 # DEPENDENCIES
 
-[tool.poetry.dependencies]
-python = "^{{cookiecutter.python_version}}"
-mlflow = "^{{cookiecutter.mlflow_version}}"
-setuptools = "^71.1.0"
+[dependency-groups]
+checks = [
+    "bandit>=1.8.0",
+    "coverage>=7.6.8",
+    "mypy>=1.13.0",
+    "pytest-cov>=6.0.0",
+    "pytest-mock>=3.14.0",
+    "pytest-xdist>=3.6.1",
+    "pytest>=8.3.3",
+    "ruff>=0.8.1",
+]
+commits = ["commitizen>=4.0.0", "pre-commit>=4.0.1"]
+dev = ["invoke>=2.2.0"]
+docs = ["pdoc>=15.0.0"]
+notebooks = ["ipykernel>=6.29.5", "nbformat>=5.10.4"]
 
-[tool.poetry.group.checks.dependencies]
-bandit = "^1.7.9"
-coverage = "^7.5.4"
-mypy = "^1.10.1"
-pytest = "^8.2.2"
-pytest-cov = "^5.0.0"
-pytest-xdist = "^3.6.1"
-ruff = "^0.5.0"
+# TOOLS
 
-[tool.poetry.group.commits.dependencies]
-commitizen = "^3.27.0"
-pre-commit = "^3.7.1"
-
-[tool.poetry.group.dev.dependencies]
-invoke = "^2.2.0"
-
-[tool.poetry.group.docs.dependencies]
-pdoc = "^14.5.1"
-
-[tool.poetry.group.notebooks.dependencies]
-ipykernel = "^6.29.4"
-nbformat = "^5.10.4"
-
-# CONFIGURATIONS
+[tool.uv]
+default-groups = ["checks", "commits", "dev", "docs", "notebooks"]
 
 [tool.bandit]
 targets = ["src"]
@@ -57,7 +60,7 @@ targets = ["src"]
 name = "cz_conventional_commits"
 tag_format = "v$version"
 version_scheme = "pep440"
-version_provider = "poetry"
+version_provider = "pep621"
 update_changelog_on_bump = true
 
 [tool.coverage.run]
@@ -67,7 +70,6 @@ omit = ["__main__.py"]
 
 [tool.mypy]
 pretty = true
-strict = true
 python_version = "{{cookiecutter.python_version}}"
 check_untyped_defs = true
 ignore_missing_imports = true
@@ -94,5 +96,5 @@ convention = "google"
 # SYSTEMS
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
