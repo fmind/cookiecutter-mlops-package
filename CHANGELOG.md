@@ -1,3 +1,13 @@
+## v3.0.0 (2024-12-15)
+
+### Fix
+
+- **project**: switch from mlflow to uv
+
+### Refactor
+
+- **cicd**: fix ci/cd bug
+
 ## v2.0.0 (2024-12-15)
 
 ### Feat
