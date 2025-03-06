@@ -16,7 +16,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Install uv
-      uses: astral-sh/setup-uv@v4
+      uses: astral-sh/setup-uv@v5
       with:
         enable-cache: true
     - name: Setup Python
@@ -24,4 +24,4 @@ jobs:
       with:
         python-version-file: .python-version
     - name: Test
-      run: uv run invoke test
+      run: uv run just test

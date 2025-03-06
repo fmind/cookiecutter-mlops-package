@@ -5,11 +5,11 @@
 
 [project]
 name = "cookiecutter-mlops-package"
-version = "3.0.0"
+version = "4.1.0"
 description = "Build and deploy Python packages and Docker images for MLOps projects."
 authors = [{ name = "Médéric HURIER", email = "github@fmind.dev" }]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 license = { file = "LICENSE.txt" }
 
 # DEPENDENCIES
@@ -17,11 +17,11 @@ license = { file = "LICENSE.txt" }
 [dependency-groups]
 dev = [
     "commitizen>=4.1.0",
-    "invoke>=2.2.0",
     "pre-commit>=4.0.1",
-    "pytest>=8.3.4",
     "pytest-cookies>=0.7.0",
     "pytest-shell-utilities>=1.9.7",
+    "pytest>=8.3.4",
+    "rust-just>=1.39.0",
 ]
 
 # TOOLS

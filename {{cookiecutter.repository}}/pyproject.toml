@@ -9,12 +9,13 @@ version = "{{cookiecutter.version}}"
 description = "{{cookiecutter.description}}"
 authors = [{ name = "{{cookiecutter.user}}" }]
 readme = "README.md"
-requires-python = ">={{cookiecutter.python_version}}"
-dependencies = [
-    "mlflow>={{cookiecutter.mlflow_version}}",
-]
 license = { file = "LICENSE.txt" }
 keywords = ["mlops", "python", "package"]
+requires-python = ">={{cookiecutter.python_version}}"
+dependencies = [
+    "hatchling>=1.27.0",
+    "mlflow>={{cookiecutter.mlflow_version}}",
+]
 
 # LINKS
 
@@ -33,25 +34,25 @@ Changelog = "https://github.com/{{cookiecutter.user}}/{{cookiecutter.repository}
 # DEPENDENCIES
 
 [dependency-groups]
-checks = [
-    "bandit>=1.8.0",
-    "coverage>=7.6.8",
-    "mypy>=1.13.0",
+check = [
+    "bandit>=1.8.3",
+    "coverage>=7.6.12",
+    "mypy>=1.15.0",
+    "pytest>=8.3.5",
     "pytest-cov>=6.0.0",
     "pytest-mock>=3.14.0",
     "pytest-xdist>=3.6.1",
-    "pytest>=8.3.3",
-    "ruff>=0.8.1",
+    "ruff>=0.9.9",
 ]
-commits = ["commitizen>=4.0.0", "pre-commit>=4.0.1"]
-dev = ["invoke>=2.2.0"]
-docs = ["pdoc>=15.0.0"]
-notebooks = ["ipykernel>=6.29.5", "nbformat>=5.10.4"]
+commit = ["commitizen>=4.4.1", "pre-commit>=4.1.0"]
+dev = ["rust-just>=1.39.0"]
+doc = ["pdoc>=15.0.1"]
+notebook = ["ipykernel>=6.29.5", "nbformat>=5.10.4"]
 
 # TOOLS
 
 [tool.uv]
-default-groups = ["checks", "commits", "dev", "docs", "notebooks"]
+default-groups = ["check", "commit", "dev", "doc", "notebook"]
 
 [tool.bandit]
 targets = ["src"]
@@ -70,7 +71,7 @@ omit = ["__main__.py"]
 
 [tool.mypy]
 pretty = true
-python_version = "{{cookiecutter.python_version}}"
+python_version = "3.13"
 check_untyped_defs = true
 ignore_missing_imports = true
 
@@ -82,7 +83,7 @@ pythonpath = ["src"]
 fix = true
 indent-width = 4
 line-length = 100
-target-version = "py{{cookiecutter.python_version.replace('.', '')}}"
+target-version = "py313"
 
 [tool.ruff.format]
 docstring-code-format = true
