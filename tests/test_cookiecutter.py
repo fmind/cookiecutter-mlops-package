@@ -9,15 +9,15 @@ from pytestshellutils.shell import Subprocess
 
 COMMANDS = [
     "git init",
-    "uv run invoke cleans.reset",
-    "uv run invoke installs",
-    "uv run invoke formats",
-    "uv run invoke checks",
-    "uv run invoke docs",
-    "uv run invoke projects",
-    "uv run invoke packages",
-    "uv run invoke containers",
-    "uv run invoke mlflow.doctor",
+    "uv run just clean",
+    "uv run just install",
+    "uv run just format",
+    "uv run just check",
+    "uv run just doc",
+    "uv run just project",
+    "uv run just package",
+    "uv run just docker",
+    "uv run just mlflow-doctor",
 ]
 
 # %% TESTS
@@ -26,14 +26,14 @@ COMMANDS = [
 def test_project_generation(cookies: Cookies) -> None:
     """Test the generation of the project."""
     # given
-    context  = {
+    context = {
         "user": "tester",
         "name": "MLOps 123",
         "license": "apache-2",
         "version": "1.0.0",
         "description": "A test project.",
-        "python_version": "3.12",
-        "mlflow_version": "2.19.0",
+        "python_version": "3.13",
+        "mlflow_version": "2.20.3",
     }
     repository = context['name'].lower().replace(' ', '-')
     package = repository.replace('-', '_')
@@ -48,8 +48,8 @@ def test_project_generation(cookies: Cookies) -> None:
     assert result.context == {
         "user": context['user'],
         "name": context['name'],
-        "repository": repository,
         "package": package,
+        "repository": repository,
         "license": context['license'],
         "version": context['version'],
         "description": context['description'],

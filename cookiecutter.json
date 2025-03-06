@@ -6,8 +6,8 @@
     "license": "MIT",
     "version": "0.1.0",
     "description": "TODO",
-    "python_version": "3.12",
-    "mlflow_version": "2.19.0",
+    "python_version": "3.13",
+    "mlflow_version": "2.20.3",
     "__prompts__": {
         "user": "GitHub User",
         "name": "Project Name",

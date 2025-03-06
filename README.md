@@ -16,7 +16,7 @@ The template provides a robust foundation for building, testing, packaging, and 
 
 This [Cookiecutter](https://cookiecutter.readthedocs.io/) is designed to be a common ground for diverse MLOps environments. Whether you're working with [Kubernetes](https://www.kubeflow.org/), [Vertex AI](https://cloud.google.com/vertex-ai), [Databricks](https://www.databricks.com/), [Azure ML](https://azure.microsoft.com/en-us/products/machine-learning), or [AWS SageMaker](https://aws.amazon.com/sagemaker/), the core principles of using Python packages and Docker images remain consistent.
 
-This template equips you with the essentials for creating, testing, and packaging your AI/ML code, providing a solid base for integration into your chosen MLOps platform. To fully leverage its capabilities within a specific environment, you might need to combine it with external tools like [Airflow](https://airflow.apache.org/) for orchestration or platform-specific SDKs for deployment.
+This template equips you with the essentials for creating, testing, and packaging your AI/ML code, providing a solid base for [integration into your chosen MLOps platform](https://fmind.medium.com/stop-building-rigid-ai-ml-pipelines-embrace-reusable-components-for-flexible-mlops-6e165d837110). To fully leverage its capabilities within a specific environment, you might need to combine it with external tools like [Airflow](https://airflow.apache.org/) for orchestration or platform-specific SDKs for deployment.
 
 You have the freedom to structure your `src/` and `tests/` directories according to your preferences. Alternatively, you can draw inspiration from the structure used in the [MLOps Python Package](https://github.com/fmind/mlops-python-package) project for a ready-made implementation.
 
@@ -50,8 +50,8 @@ You'll be prompted for the following variables:
 - `license`: The license for your project.
 - `version`: The initial version of your project.
 - `description`: A brief description of your project.
-- `python_version`: The Python version to use (e.g., 3.12).
-- `mlflow_version`: The MLflow version to use (e.g., 2.19.0).
+- `python_version`: The Python version to use (e.g., 3.13).
+- `mlflow_version`: The MLflow version to use (e.g., 2.20.3).
 
 2. **Initialize a git repository:**
 
@@ -78,22 +78,25 @@ git init
 
 Use the provided Invoke tasks to manage your development workflow:
 
-- `invoke installs`: Install dependencies and pre-commit hooks.
-- `invoke formats`: Format your code.
-- `invoke checks`: Run code quality, type, security, and test checks.
-- `invoke docs`: Generate API documentation.
-- `invoke packages`: Build your Python package.
-- `invoke projects`: Run MLflow projects.
-- `invoke containers`: Build and run your Docker image.
+- `uv run just check`: Run code quality, type, security, and test checks.
+- `uv run just clean`: Clean up generated files.
+- `uv run just commit`: Commit changes to your repository.
+- `uv run just doc`: Generate API documentation.
+- `uv run just docker`: Build and run your Docker image.
+- `uv run just format`: Format your code with Ruff.
+- `uv run just install`: Install dependencies, pre-commit hooks, and GitHub rulesets.
+- `uv run just mlflow`: Start an Mlflow server.
+- `uv run just package`: Build your Python package.
+- `uv run just project`: Run the project in the CLI.
 
 ## Example Usage
 
-### Running an MLflow Project
+### Running the Project Script
 
 After installing dependencies and setting up MLflow:
 
 ```bash
-invoke projects
+uv run just project
 ```
 
 This will execute the job with the configuration file in your `confs` folder.
@@ -101,7 +104,7 @@ This will execute the job with the configuration file in your `confs` folder.
 ### Building and Running Your Docker Image
 
 ```bash
-invoke containers
+invoke docker
 ```
 
 This builds a Docker image based on your [`Dockerfile`](https://github.com/fmind/cookiecutter-mlops-package/blob/main/%7B%7Bcookiecutter.repository%7D%7D/Dockerfile) and runs it. The `CMD` in the Dockerfile executes your package with the `--help` flag.
