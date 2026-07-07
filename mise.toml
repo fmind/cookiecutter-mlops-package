@@ -1,0 +1,93 @@
+# https://mise.jdx.dev
+# Canonical task vocabulary shared by git hooks (lefthook) and CI (GitHub Actions).
+# This repository is the cookiecutter template harness; the generated project ships its own mise.toml.
+
+[settings.task]
+run_auto_install = false
+
+[tools]
+uv = "latest"
+dprint = "latest"
+gitleaks = "latest"
+trivy = "latest"
+
+# INSTALL
+
+[tasks.install]
+alias = "i"
+description = "Install dependencies and git hooks"
+depends = ["install:hooks"]
+
+[tasks."install:python"]
+description = "Sync Python dependencies (uv)"
+run = "uv sync --all-groups"
+
+[tasks."install:hooks"]
+description = "Install git hooks (lefthook)"
+depends = ["install:python"]
+run = "uv run lefthook install"
+
+# FORMAT
+
+[tasks.format]
+alias = "f"
+description = "Format all sources and documents"
+run = ["mise run format:python", "mise run format:dprint"]
+
+[tasks."format:python"]
+description = "Format Python sources and imports (ruff)"
+run = "uv run ruff check --select=I --fix --force-exclude . && uv run ruff format --force-exclude ."
+
+[tasks."format:dprint"]
+description = "Format JSON, Markdown, TOML, YAML (dprint)"
+run = "dprint fmt"
+
+# CHECK
+
+[tasks.check]
+alias = "c"
+description = "Run all static checks in parallel"
+depends = [
+  "check:format",
+  "check:leaks",
+  "check:lint",
+  "check:types",
+  "check:vuln",
+  "check:scan",
+]
+
+[tasks."check:format"]
+description = "Check formatting and config validity"
+run = [
+  "uv run validate-pyproject pyproject.toml",
+  "uv run ruff format --check --force-exclude .",
+  "dprint check",
+  "uv lock --check",
+]
+
+[tasks."check:lint"]
+description = "Lint Python sources (ruff)"
+run = "uv run ruff check --force-exclude ."
+
+[tasks."check:types"]
+description = "Type-check Python sources (ty)"
+run = "uv run ty check tests"
+
+[tasks."check:vuln"]
+description = "Scan dependencies for vulnerabilities (pip-audit)"
+run = "uv run pip-audit"
+
+[tasks."check:leaks"]
+description = "Audit codebase for leaked secrets (gitleaks)"
+run = 'gitleaks git --log-opts="--max-count=100" --verbose'
+
+[tasks."check:scan"]
+description = "Scan configuration files for misconfigurations (trivy)"
+run = "trivy config ."
+
+# TEST
+
+[tasks.test]
+alias = "t"
+description = "Bake the template and run the generated project's toolchain (pytest)"
+run = "uv run pytest"

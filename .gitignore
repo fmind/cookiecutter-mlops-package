@@ -1,14 +1,26 @@
 # https://git-scm.com/docs/gitignore
 
-# IDE
-/.idea/
-/.vscode/
+# Build
+/dist/
+/build/
 
-# Python
-.venv/
-*.py[cod]
-__pycache__/
-.mypy_cache/
+# Cache
+.cache/
+.coverage*
 .ruff_cache/
 .pytest_cache/
+.ty_cache/
+/htmlcov/
+
+# Editor
+/.idea/
+/.vscode/
 .ipynb_checkpoints/
+
+# Environs
+.env
+/.venv/
+
+# Python
+*.py[cod]
+__pycache__/

@@ -5,36 +5,105 @@
 
 [project]
 name = "cookiecutter-mlops-package"
-version = "4.1.0"
+version = "5.0.0"
 description = "Build and deploy Python packages and Docker images for MLOps projects."
 authors = [{ name = "Médéric HURIER", email = "github@fmind.dev" }]
 readme = "README.md"
-requires-python = ">=3.13"
-license = { file = "LICENSE.txt" }
+license = "MIT"
+license-files = ["LICENSE.txt"]
+requires-python = ">=3.14"
 
 # DEPENDENCIES
 
 [dependency-groups]
 dev = [
-    "commitizen>=4.1.0",
-    "pre-commit>=4.0.1",
-    "pytest-cookies>=0.7.0",
-    "pytest-shell-utilities>=1.9.7",
-    "pytest>=8.3.4",
-    "rust-just>=1.39.0",
+  "lefthook>=2.1.9",
+  "pip-audit>=2.9.0",
+  "pytest>=9.1.1",
+  "pytest-cookies>=0.7.0",
+  "pytest-shell-utilities>=1.9.7",
+  "ruff>=0.15.0",
+  "ty>=0.0.56,<0.1", # pre-1.0: pin a compatible range until it stabilizes
+  "validate-pyproject>=0.25",
 ]
 
 # TOOLS
 
 [tool.uv]
+# The harness is a pytest-cookies test suite, not a distributable package.
 package = false
 
-[tool.commitizen]
-name = "cz_conventional_commits"
-tag_format = "v$version"
-version_scheme = "pep440"
-version_provider = "pep621"
-update_changelog_on_bump = true
+[tool.ruff]
+line-length = 120
+target-version = "py314"
+# Skip the cookiecutter template sources (raw Jinja is not valid Python).
+extend-exclude = ["[{][{]cookiecutter.repository[}][}]"]
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+quote-style = "double"
+
+[tool.ruff.lint]
+select = [
+  "A", # flake8-builtins
+  "ARG", # flake8-unused-arguments
+  "B", # flake8-bugbear
+  "C4", # flake8-comprehensions
+  "D", # pydocstyle (documented public API)
+  "E", # pycodestyle errors
+  "ERA", # eradicate (no commented-out code)
+  "F", # pyflakes
+  "FA", # flake8-future-annotations
+  "FURB", # refurb (modern constructs)
+  "I", # isort (import sorting)
+  "ISC", # flake8-implicit-str-concat
+  "LOG", # flake8-logging
+  "N", # pep8-naming
+  "PERF", # Perflint
+  "PGH", # pygrep-hooks
+  "PIE", # flake8-pie
+  "PT", # flake8-pytest-style
+  "PTH", # flake8-use-pathlib
+  "Q", # flake8-quotes
+  "RET", # flake8-return
+  "RSE", # flake8-raise
+  "RUF", # ruff-specific rules
+  "S", # flake8-bandit (security; replaces bandit)
+  "SIM", # flake8-simplify
+  "SLF", # flake8-self
+  "T10", # flake8-debugger
+  "T20", # flake8-print
+  "TID", # flake8-tidy-imports
+  "UP", # pyupgrade
+  "W", # pycodestyle warnings
+]
+ignore = [
+  "E501", # line length handled by the formatter
+  "N812", # project convention: `import typing as T`
+  "UP040", # some aliases double as runtime constructors (PEP 695 `type` would break them)
+  "RUF012", # Pydantic copies mutable field defaults per-instance (rule false-positive here)
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+  "D100", # missing docstring in public module
+  "D103", # missing docstring in public function
+  "S101", # asserts allowed in tests
+  "S603", # subprocess calls are the point of the harness
+]
+
+[tool.ty.environment]
+python-version = "3.14"
+
+# `ty` (pre-1.0) cannot model the untyped, attrs-based pytest-cookies /
+# pytest-shell-utilities APIs; relax those categories so `ty` still gates real errors.
+[tool.ty.rules]
+unresolved-attribute = "ignore" # dynamic attributes on Cookies/Subprocess result objects
+missing-argument = "ignore" # attrs defaults on `Subprocess(...)` ty cannot see
 
 [tool.pytest.ini_options]
 log_cli = true
