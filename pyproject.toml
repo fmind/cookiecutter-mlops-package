@@ -106,5 +106,7 @@ unresolved-attribute = "ignore" # dynamic attributes on Cookies/Subprocess resul
 missing-argument = "ignore" # attrs defaults on `Subprocess(...)` ty cannot see
 
 [tool.pytest.ini_options]
+# Collect only the harness tests; never recurse into the raw Jinja template sources.
+testpaths = ["tests"]
 log_cli = true
 log_cli_level = "INFO"
