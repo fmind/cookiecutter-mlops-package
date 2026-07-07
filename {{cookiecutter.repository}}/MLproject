@@ -1,0 +1,9 @@
+# https://mlflow.org/docs/latest/projects.html
+# Run with `mise run project:run <job>` (uses --env-manager=local to reuse the uv environment).
+
+name: {{cookiecutter.repository}}
+entry_points:
+  main:
+    parameters:
+      conf_file: path
+    command: "PYTHONPATH=src python -m {{cookiecutter.package}} {conf_file}"
