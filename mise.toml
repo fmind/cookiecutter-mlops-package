@@ -6,10 +6,23 @@
 run_auto_install = false
 
 [tools]
-uv = "latest"
+actionlint = "latest"
 dprint = "latest"
+git-cliff = "latest"
 gitleaks = "latest"
 trivy = "latest"
+uv = "latest"
+zizmor = "latest"
+
+# ALL
+
+[tasks.all]
+alias = "a"
+description = "Format, check, and test the harness (the canonical gate)"
+# No `build` step: `[tool.uv] package = false` — this repository is a test suite, not a
+# distribution. `hadolint` is likewise absent: the only Dockerfile here is raw Jinja and
+# is linted inside the baked project by `mise run test`.
+run = ["mise run format", "mise run check", "mise run test"]
 
 # INSTALL
 
@@ -48,13 +61,20 @@ run = "dprint fmt"
 alias = "c"
 description = "Run all static checks in parallel"
 depends = [
+  "check:actions",
   "check:format",
   "check:leaks",
   "check:lint",
+  "check:scan",
   "check:types",
   "check:vuln",
-  "check:scan",
 ]
+
+[tasks."check:actions"]
+description = "Lint and audit GitHub Actions workflows (actionlint + zizmor)"
+# Both tools read only this repository's own `.github/workflows`: the template's
+# workflows are raw Jinja (invalid YAML) and are linted inside the baked project instead.
+run = ["actionlint", "zizmor --offline .github/workflows/"]
 
 [tasks."check:format"]
 description = "Check formatting and config validity"
@@ -71,19 +91,23 @@ run = "uv run ruff check --force-exclude ."
 
 [tasks."check:types"]
 description = "Type-check Python sources (ty)"
+# `tests` only: there is no `src/`, and the template sources are raw Jinja, not Python.
 run = "uv run ty check tests"
 
 [tasks."check:vuln"]
 description = "Scan dependencies for vulnerabilities (pip-audit)"
-run = "uv run pip-audit"
+run = "uv run pip-audit --skip-editable --cache-dir .cache/pip-audit"
 
 [tasks."check:leaks"]
 description = "Audit codebase for leaked secrets (gitleaks)"
 run = 'gitleaks git --log-opts="--max-count=100" --verbose'
 
 [tasks."check:scan"]
-description = "Scan configuration files for misconfigurations (trivy)"
-run = "trivy config ."
+description = "Scan the checkout for misconfigurations, secrets, and licenses (trivy)"
+# `--config` is explicit on purpose: without it a `TRIVY_CONFIG` exported in the user's
+# shell silently wins over the policy committed here, and the repository's own rules
+# never run. `fs` (not `config`) is what actually enables every scanner in trivy.yaml.
+run = "trivy --config trivy.yaml fs ."
 
 # TEST
 
@@ -91,3 +115,19 @@ run = "trivy config ."
 alias = "t"
 description = "Bake the template and run the generated project's toolchain (pytest)"
 run = "uv run pytest"
+
+# UTILITIES
+
+[tasks.upgrade]
+alias = "u"
+description = "Upgrade dependencies to the latest compatible versions"
+run = "uv sync --upgrade"
+
+[tasks.clean]
+alias = "n"
+description = "Remove caches and build artifacts"
+run = [
+  "find . -type f -name '*.py[co]' -delete",
+  "find . -type d -name __pycache__ -exec rm -rf {} +",
+  "rm -rf .cache .pytest_cache .ruff_cache .ty_cache .coverage htmlcov dist",
+]

@@ -4,7 +4,7 @@
 
 **Jumpstart your MLOps projects with this comprehensive [Cookiecutter template](https://cookiecutter.readthedocs.io/)**.
 
-The template provides a robust foundation for building, testing, packaging, and deploying Python packages and Docker Images tailored for MLOps tasks.
+The template provides a robust foundation for building, testing, packaging, and deploying Python packages and Docker images tailored for MLOps tasks.
 
 **Related resources**:
 
@@ -23,22 +23,20 @@ You have the freedom to structure your `src/` and `tests/` directories according
 
 ## Key Features
 
-- **Streamlined Project Structure:** A well-defined directory layout for source code, tests, documentation, tasks, and Docker configurations.
-- **Uv Integration:** Effortless dependency management and packaging with [uv](https://docs.astral.sh/uv/).
-- **Automated Testing and Checks:** Pre-configured workflows using [Pytest](https://docs.pytest.org/), [Ruff](https://docs.astral.sh/ruff/), [Mypy](https://mypy.readthedocs.io/), [Bandit](https://bandit.readthedocs.io/), and [Coverage](https://coverage.readthedocs.io/) to ensure code quality, style, security, and type safety.
-- **Pre-commit Hooks:** Automatic code formatting and linting with [Ruff](https://docs.astral.sh/ruff/) and other pre-commit hooks to maintain consistency.
-- **Dockerized Deployment:** Dockerfile and docker-compose.yml for building and running the package within a containerized environment ([Docker](https://www.docker.com/)).
-- **Invoke Task Automation:** [PyInvoke](https://www.pyinvoke.org/) tasks to simplify development workflows such as cleaning, installing, formatting, checking, building, documenting, and running MLflow projects.
-- **Comprehensive Documentation:** [pdoc](https://pdoc.dev/) generates API documentation, and Markdown files provide clear usage instructions.
-- **GitHub Workflow Integration:** Continuous integration and deployment workflows are set up using [GitHub Actions](https://github.com/features/actions), automating testing, checks, and publishing.
+- **One task vocabulary**: [mise](https://mise.jdx.dev/) defines `install`, `format`, `check`, `test`, `build`, and the `all` gate. Git hooks, CI, and you run the exact same commands — there is no second definition to keep in sync.
+- **Fast, single-tool Python stack**: [uv](https://docs.astral.sh/uv/) for dependencies and packaging, [Ruff](https://docs.astral.sh/ruff/) for linting and formatting (its `S`/bandit rules replace a separate security linter), and [ty](https://github.com/astral-sh/ty) for type checking.
+- **Security in the gate, not beside it**: [pip-audit](https://pypi.org/project/pip-audit/) for dependency CVEs, [gitleaks](https://github.com/gitleaks/gitleaks) for secrets, [Trivy](https://trivy.dev/) for the whole checkout, [hadolint](https://github.com/hadolint/hadolint) for the image, and [actionlint](https://github.com/rhysd/actionlint) + [zizmor](https://docs.zizmor.sh/) for the workflows.
+- **Tested by generation, not by inspection**: `mise run test` bakes a real project into a temporary directory and runs that project's own gate — format, check, test, build, docs, Docker image, and MLflow jobs.
+- **MLflow on a real store**: tracking and the model registry use a SQLite database (`sqlite:///mlflow.db`), the SQLAlchemy backend MLflow 3 defaults to and the only local store the model registry was designed for.
+- **Container and CI/CD included**: a multi-stage, non-root [Docker](https://www.docker.com/) image, plus [GitHub Actions](https://github.com/features/actions) workflows for the gate (`ci.yml`), the release (`cd.yml`: [pdoc](https://pdoc.dev/) docs to GitHub Pages and the image to GHCR), and a weekly full-history security rescan (`security.yml`).
+- **Maintained by default**: [Dependabot](https://docs.github.com/en/code-security/dependabot) groups minor and patch bumps per ecosystem, [lefthook](https://lefthook.dev/) runs the gate before every commit and push, and [git-cliff](https://git-cliff.org/) turns Conventional Commits into a changelog.
 
 ## Quick Start
 
 1. **Generate your project:**
 
 ```bash
-pip install cookiecutter
-cookiecutter gh:fmind/cookiecutter-mlops-package
+uvx cookiecutter gh:fmind/cookiecutter-mlops-package
 ```
 
 You'll be prompted for the following variables:
@@ -47,67 +45,57 @@ You'll be prompted for the following variables:
 - `name`: The name of your project.
 - `repository`: The name of your GitHub repository.
 - `package`: The name of your Python package.
-- `license`: The license for your project.
 - `version`: The initial version of your project.
+- `year`: The copyright year written into `LICENSE.txt`.
 - `description`: A brief description of your project.
-- `python_version`: The Python version to use (e.g., 3.13).
-- `mlflow_version`: The MLflow version to use (e.g., 2.20.3).
+- `python_version`: The Python version to use (e.g., 3.14). It drives `requires-python`, the Ruff target, the ty environment, and the Docker base image at once.
+- `mlflow_version`: The MLflow version to use (e.g., 3.15.1).
 
-2. **Initialize a git repository:**
+The generated project is MIT-licensed. To use another license, replace `LICENSE.txt` and the `license` field in `pyproject.toml` — the template does not ship alternative license texts, so there is no prompt for it.
+
+2. **Set the project up:**
 
 ```bash
-cd {{ cookiecutter.repository }}
-git init
+cd <your-repository>
+git init          # git hooks (lefthook) and secret scanning (gitleaks) need a repository
+mise install      # download the pinned toolchain (tasks never auto-install it)
+mise run install  # sync the virtualenv (uv) and install git hooks (lefthook)
 ```
 
-3. **Enable GitHub Pages Workflow:**
+3. **Configure the GitHub repository:**
 
-- Navigate to your repository settings on GitHub: "Settings" -> "Actions" -> "General."
-- Under "Workflow permissions," ensure "Read and write permissions" is selected.
-  - This allows the workflow to automatically publish your documentation.
+- **Documentation hosting**: go to **Settings → Pages** and set **Source** to **GitHub Actions**. The shipped `cd.yml` deploys through the `github-pages` environment with `actions/deploy-pages`; it never pushes to a branch, so it does not need "Read and write permissions" under Actions.
+- **Branch protection**: run `mise run install:rulesets` to apply `.github/rulesets/main.json`. It requires the `checks` status check, which is the `ci.yml` job name; rename both or neither.
 
 4. **Explore the generated project:**
 
-- `src/{{cookiecutter.package}}`: Your Python package source code.
-- `tests/`: Unit tests for your package.
-- `tasks/`: PyInvoke tasks for automation.
-- `Dockerfile`: Configuration for building your Docker image.
-- `docker-compose.yml`: Orchestration file for running MLflow and your project.
+- `src/<your-package>/`: your Python package source code.
+- `tests/`: the `pytest` suite, with coverage enforced by `mise run test`.
+- `confs/`: one config file per MLflow job.
+- `Dockerfile` / `docker-compose.yml`: the production image and a local MLflow server.
+- `mise.toml`: every task; `mise tasks` lists them.
 
-5. **Start developing!**
-
-Use the provided Invoke tasks to manage your development workflow:
-
-- `uv run just check`: Run code quality, type, security, and test checks.
-- `uv run just clean`: Clean up generated files.
-- `uv run just commit`: Commit changes to your repository.
-- `uv run just doc`: Generate API documentation.
-- `uv run just docker`: Build and run your Docker image.
-- `uv run just format`: Format your code with Ruff.
-- `uv run just install`: Install dependencies, pre-commit hooks, and GitHub rulesets.
-- `uv run just mlflow`: Start an Mlflow server.
-- `uv run just package`: Build your Python package.
-- `uv run just project`: Run the project in the CLI.
-
-## Example Usage
-
-### Running the Project Script
-
-After installing dependencies and setting up MLflow:
+5. **Start developing:**
 
 ```bash
-uv run just project
+mise run all      # the gate: format, check, test, build
+mise run project  # run every MLflow job
+mise tasks        # list everything else
 ```
 
-This will execute the job with the configuration file in your `confs` folder.
+## Working on the Template
 
-### Building and Running Your Docker Image
+This repository has two layers, each with its own toolchain: the harness at the root (a [pytest-cookies](https://github.com/hackebrot/pytest-cookies) bake suite) and the template sources under `{{cookiecutter.repository}}/`.
 
 ```bash
-invoke docker
+mise install      # download the pinned toolchain
+mise run install  # sync the virtualenv and install git hooks
+mise run all      # format, check, and test the harness
 ```
 
-This builds a Docker image based on your [`Dockerfile`](https://github.com/fmind/cookiecutter-mlops-package/blob/main/%7B%7Bcookiecutter.repository%7D%7D/Dockerfile) and runs it. The `CMD` in the Dockerfile executes your package with the `--help` flag.
+`mise run test` is the real proof: it bakes a project into a temporary directory and runs the generated project's own gate inside it, including a Docker build and MLflow jobs. It takes several minutes and needs `docker` running.
+
+Keep the template in sync with the reference implementation, [mlops-python-package](https://github.com/fmind/mlops-python-package): shared configuration files should differ only by their cookiecutter variables. See [`AGENTS.md`](AGENTS.md) for the conventions that keep both layers honest.
 
 ## Contributions
 

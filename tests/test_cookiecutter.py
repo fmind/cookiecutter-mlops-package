@@ -8,18 +8,22 @@ from pytestshellutils.shell import Subprocess
 # %% COMMANDS
 
 # `mise` is a system tool (not a uv dependency), so tasks run as `mise run <task>`.
+# `mise install` is explicit: the generated project sets `run_auto_install = false`, so
+# without it `mise run check` would not provision actionlint/zizmor/hadolint/trivy and
+# would either error or silently fall through to whatever the outer shell happens to
+# have on PATH — a green run that proves nothing about the generated project.
 # `git init` is required before `mise run install`: lefthook installs git hooks and
 # `gitleaks` scans git history, both of which need a repository.
 COMMANDS = [
     "mise trust -y",
+    "mise install -y",
     "git init",
     "mise run clean",
     "mise run install",
-    "mise run format",
-    "mise run check",
+    # The generated project's own gate: format, check, test, and build in one task.
+    "mise run all",
     "mise run docs",
     "mise run project",
-    "mise run build",
     "mise run build:image",
     "mise run mlflow:doctor",
 ]
@@ -33,11 +37,11 @@ def test_project_generation(cookies: Cookies) -> None:
     context = {
         "user": "tester",
         "name": "MLOps 123",
-        "license": "MIT",
         "version": "1.0.0",
+        "year": "2026",
         "description": "A test project.",
         "python_version": "3.14",
-        "mlflow_version": "3.14.0",
+        "mlflow_version": "3.15.1",
     }
     repository = context["name"].lower().replace(" ", "-")
     package = repository.replace("-", "_")
@@ -54,8 +58,8 @@ def test_project_generation(cookies: Cookies) -> None:
         "name": context["name"],
         "package": package,
         "repository": repository,
-        "license": context["license"],
         "version": context["version"],
+        "year": context["year"],
         "description": context["description"],
         "python_version": context["python_version"],
         "mlflow_version": context["mlflow_version"],
