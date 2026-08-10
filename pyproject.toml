@@ -17,13 +17,15 @@ requires-python = ">=3.14"
 
 [dependency-groups]
 dev = [
-  "lefthook>=2.1.9",
-  "pip-audit>=2.9.0",
+  "lefthook>=2.1.10",
+  "pip-audit>=2.10.1",
   "pytest>=9.1.1",
   "pytest-cookies>=0.7.0",
   "pytest-shell-utilities>=1.9.7",
-  "ruff>=0.15.0",
-  "ty>=0.0.56,<0.1", # pre-1.0: pin a compatible range until it stabilizes
+  # Ruff 0.16 formats Python inside Markdown and rewrote the default rule set:
+  # an older Ruff would disagree with this repository's formatting, so floor it.
+  "ruff>=0.16.2",
+  "ty>=0.0.69,<0.1", # pre-1.0: pin a compatible range until it stabilizes
   "validate-pyproject>=0.25",
 ]
 

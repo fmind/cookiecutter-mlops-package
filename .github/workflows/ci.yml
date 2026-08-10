@@ -9,14 +9,21 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  check:
+    runs-on: ubuntu-24.04
+    # 20 minutes is the standard budget; this gate also bakes a project and runs its full
+    # toolchain (uv sync, MLflow jobs, a Docker build), so it gets a wider one.
+    timeout-minutes: 40
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
-      - name: Install mise toolchain
+        with:
+          persist-credentials: false # no step pushes back to the repository
+      - name: Install mise system
         uses: jdx/mise-action@v4
-      - name: Run checks
-        run: mise run check
-      - name: Run tests
-        run: mise run test
+        with:
+          cache: true
+      - name: Run canonical gate
+        run: mise run all
+      - name: Verify no changes
+        run: test -z "$(git status --porcelain)"
