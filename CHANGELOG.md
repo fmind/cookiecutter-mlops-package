@@ -2,12 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [6.0.0] - 2026-08-10
+
+### 🚀 Features
+
+- [**breaking**] Fix the ruleset contract, track MLflow in SQLite, harden both layers (#5)
+
 ## [5.0.0] - 2026-07-07
 
 ### 🚀 Features
 
 - Add Agent Skills
-- [**breaking**] Migrate template + harness to canonical stack (mise, lefthook, ty, dprint, git-cliff, uv_build), Python 3.14, MLflow 3
+- [**breaking**] Migrate template to canonical stack — v5.0.0 (#4)
 
 ## [4.1.0] - 2025-03-06
 

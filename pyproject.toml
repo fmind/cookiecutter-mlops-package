@@ -5,7 +5,7 @@
 
 [project]
 name = "cookiecutter-mlops-package"
-version = "5.0.0"
+version = "6.0.0"
 description = "Build and deploy Python packages and Docker images for MLOps projects."
 authors = [{ name = "Médéric HURIER", email = "github@fmind.dev" }]
 readme = "README.md"
