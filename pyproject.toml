@@ -24,8 +24,8 @@ dev = [
   "pytest-shell-utilities>=1.9.7",
   # Ruff 0.16 formats Python inside Markdown and rewrote the default rule set:
   # an older Ruff would disagree with this repository's formatting, so floor it.
-  "ruff>=0.16.2",
-  "ty>=0.0.69,<0.1", # pre-1.0: pin a compatible range until it stabilizes
+  "ruff>=0.16.3",
+  "ty>=0.0.71,<0.1", # pre-1.0: pin a compatible range until it stabilizes
   "validate-pyproject>=0.25",
 ]
 
