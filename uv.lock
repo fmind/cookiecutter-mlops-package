@@ -202,7 +202,7 @@ wheels = [
 
 [[package]]
 name = "cookiecutter-mlops-package"
-version = "6.0.0"
+version = "6.1.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
