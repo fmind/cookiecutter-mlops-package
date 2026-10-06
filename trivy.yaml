@@ -1,3 +1,5 @@
+# https://trivy.dev/latest/docs/references/configuration/config-file/
+
 severity:
   - HIGH
   - CRITICAL

@@ -100,7 +100,8 @@ run = "uv run pip-audit --skip-editable --cache-dir .cache/pip-audit"
 
 [tasks."check:leaks"]
 description = "Audit codebase for leaked secrets (gitleaks)"
-run = 'gitleaks git --log-opts="--max-count=100" --verbose'
+# Redact: CI logs are public, and a finding must not print the secret it found.
+run = 'gitleaks git --log-opts="--max-count=100" --redact=100 --verbose'
 
 [tasks."check:scan"]
 description = "Scan the checkout for misconfigurations, secrets, and licenses (trivy)"
@@ -121,7 +122,7 @@ run = "uv run pytest"
 [tasks.upgrade]
 alias = "u"
 description = "Upgrade dependencies to the latest compatible versions"
-run = "uv sync --upgrade"
+run = "uv lock --upgrade && uv sync --all-groups"
 
 [tasks.clean]
 alias = "n"
