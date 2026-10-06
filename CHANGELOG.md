@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [6.1.0] - 2026-10-06
+
+### 🚀 Features
+
+- Ship locked toolchains, SHA-pin actions, and sync the reference (#10)
+
+### 🐛 Bug Fixes
+
+- _(ci)_ Pin the security workflow runner to ubuntu-24.04 (#7)
+
 ## [6.0.0] - 2026-08-10
 
 ### 🚀 Features
