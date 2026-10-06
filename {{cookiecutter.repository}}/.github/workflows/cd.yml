@@ -1,3 +1,4 @@
+# https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
 name: CD
 on:
   release:
@@ -17,24 +18,24 @@ jobs:
       url: {% raw %}${{ steps.deployment.outputs.page_url }}{% endraw %}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false # no step pushes back to the repository
       - name: Install mise toolchain
-        uses: jdx/mise-action@v5
+        uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
         with:
           cache: false # a poisoned tool cache must never reach published artifacts
       - name: Build API documentation
         run: mise run docs
       - name: Configure Pages
-        uses: actions/configure-pages@v6
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: docs/
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
   image:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -43,7 +44,7 @@ jobs:
       packages: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false # the registry login below carries its own token
       - name: Set lower-case image path
@@ -54,15 +55,15 @@ jobs:
           REPOSITORY: {% raw %}${{ github.repository }}{% endraw %}
         run: echo "IMAGE=$(echo "ghcr.io/$REPOSITORY" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: {% raw %}${{ github.actor }}{% endraw %}
           password: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - name: Build and push image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           push: true
