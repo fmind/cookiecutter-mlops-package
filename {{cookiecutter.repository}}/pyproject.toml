@@ -51,15 +51,6 @@ dev = [
 ]
 notebook = ["ipykernel>=6.29.5", "nbformat>=5.10.4"]
 
-# OVERRIDES
-
-[tool.uv]
-# MLflow still declares `cryptography<50`, but the fix for PYSEC-2026-3552 (PKCS#7
-# Bleichenbacher oracle) only ships in 50.0.0. Overriding the stale upper bound installs
-# the patched library; the test suite is what proves MLflow still works with it. Drop
-# this override once MLflow relaxes the constraint upstream.
-override-dependencies = ["cryptography>=50"]
-
 # TOOLS
 
 [tool.ruff]

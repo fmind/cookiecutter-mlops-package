@@ -48,8 +48,8 @@ You'll be prompted for the following variables:
 - `version`: The initial version of your project.
 - `year`: The copyright year written into `LICENSE.txt`.
 - `description`: A brief description of your project.
-- `python_version`: The Python version to use (e.g., 3.14). It drives `requires-python`, the Ruff target, the ty environment, and the Docker base image at once.
-- `mlflow_version`: The MLflow version to use (e.g., 3.15.1).
+- `python_version`: The Python version to use (e.g., 3.14). It drives `requires-python`, the Ruff target, the ty environment, `.python-version`, and the Docker base image at once.
+- `mlflow_version`: The MLflow version to use (e.g., 3.16.1).
 
 The generated project is MIT-licensed. To use another license, replace `LICENSE.txt` and the `license` field in `pyproject.toml` — the template does not ship alternative license texts, so there is no prompt for it.
 

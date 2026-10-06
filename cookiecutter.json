@@ -7,7 +7,7 @@
   "year": "2026",
   "description": "A short description of the project.",
   "python_version": "3.14",
-  "mlflow_version": "3.15.1",
+  "mlflow_version": "3.16.1",
   "_copy_without_render": ["cliff.toml"],
   "__prompts__": {
     "user": "GitHub User",
