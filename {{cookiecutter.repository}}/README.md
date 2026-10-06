@@ -14,10 +14,10 @@ mise install      # download the pinned toolchain (tasks never auto-install it)
 mise run install  # sync the virtualenv (uv) and install git hooks (lefthook)
 ```
 
-`mise.toml` pins every tool to an exact version. Optionally, record their checksums too, so re-installs are verified:
+`mise.toml` pins every tool to an exact version and `mise.lock` records their checksums, so every install is verified. After changing a pin, refresh the lock and commit both:
 
 ```bash
-mise lock  # writes mise.lock; commit it and rerun it after changing a pin
+mise lock
 ```
 
 ## Usage

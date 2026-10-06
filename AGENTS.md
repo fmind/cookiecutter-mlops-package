@@ -25,7 +25,7 @@ A change is complete only when, locally, `mise run all` passes warning-free — 
 
 ## Conventions & idioms
 
-- **Two toolchains**: the harness (this repo root) and the generated project (`{{cookiecutter.repository}}/`) each have their own `mise.toml`/`pyproject.toml`/`lefthook.yml`/`dprint.jsonc`/`trivy.yaml`. A change to one usually belongs in both; the exceptions are things the harness does not have (a `Dockerfile`, a `src/`, a distribution to build, a `docker` Dependabot ecosystem).
+- **Two toolchains**: the harness (this repo root) and the generated project (`{{cookiecutter.repository}}/`) each have their own `mise.toml`/`mise.lock`/`pyproject.toml`/`lefthook.yml`/`dprint.jsonc`/`trivy.yaml`. A change to one usually belongs in both; the exceptions are things the harness does not have (a `Dockerfile`, a `src/`, a distribution to build, `docker`/`docker-compose` Dependabot ecosystems). After changing a tool pin, run `mise lock` in each layer you touched; `tests/test_locks.py` fails until you do.
 - **Change the template, not the bake output**: the bake writes to a temporary directory. Editing a generated project proves nothing and is thrown away.
 - **Jinja templating**: GitHub Actions expressions `${{ ... }}` inside `{{cookiecutter.repository}}/.github/workflows/*.yml` must be wrapped in `{% raw %}...{% endraw %}` so cookiecutter does not render them — including inside YAML comments, where a bare `${{ }}` is still a Jinja expression and will fail the bake.
 - **One answer, one fact**: `{{cookiecutter.python_version}}` drives `requires-python`, `[tool.ruff] target-version` (via `.replace('.', '')`), `[tool.ty.environment]`, `.python-version`, and the `Dockerfile` base image. Never hardcode a value that a variable already carries.
@@ -37,6 +37,6 @@ A change is complete only when, locally, `mise run all` passes warning-free — 
 ## Repository layout
 
 - `{{cookiecutter.repository}}/` — the generated project template (own `mise.toml`, `pyproject.toml`, `src/`, `tests/`, `confs/`, `Dockerfile`, `.github/`).
-- `cookiecutter.json` — template variables, defaults, and prompts; `tests/test_cookiecutter.py` — the bake-and-run integration test and the list of commands it runs in the generated project.
+- `cookiecutter.json` — template variables, defaults, and prompts; `tests/test_cookiecutter.py` — the bake-and-run integration test and the list of commands it runs in the generated project; `tests/test_locks.py` — each layer's `mise.lock` matches its `mise.toml` pins.
 - `pyproject.toml` — harness dependencies and `ruff`/`ty`/`pytest` config; `mise.toml`/`mise.lock` — tasks and pinned, locked tools; `lefthook.yml` — git hooks; `dprint.jsonc`/`trivy.yaml`/`cliff.toml` — formatter, scanner, changelog config.
-- `.github/` — `workflows/` (`ci.yml` runs `mise run all`, `security.yml` rescans the full history weekly), `dependabot.yml`, `zizmor.yml`.
+- `.github/` — `workflows/` (`ci.yml` runs `mise run all`, `security.yml` rescans the full history weekly), `dependabot.yml`.
