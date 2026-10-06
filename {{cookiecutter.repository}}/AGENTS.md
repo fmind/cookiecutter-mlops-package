@@ -34,7 +34,6 @@ A change is complete only when, locally, `mise run all` passes warning-free and 
 - **MLflow**: tracking and registry run on a SQLite backend (`sqlite:///mlflow.db`, the same store MLflow 3 now defaults to); artifact files stay on disk under `./mlruns`, and the standalone server in `docker-compose.yml` writes artifacts to `./mlartifacts`. This is the same SQLAlchemy store shape as a production PostgreSQL and the store the model registry is designed for, so moving up is an `MLFLOW_TRACKING_URI` change (see `.env.example`), not a rewrite.
 - **Coverage**: the gate starts at 80% (`--cov-fail-under` in `pyproject.toml`) because a fresh package has little to cover. Raise it as the suite grows; never lower it to make a run pass.
 - **Python version**: `{{cookiecutter.python_version}}` is set once by the template and reused by `requires-python`, `[tool.ruff] target-version`, `[tool.ty.environment]`, and the `Dockerfile` base image. Change all of them together.
-- **Dependency overrides**: `[tool.uv] override-dependencies` carries a documented exception (a patched `cryptography` MLflow has not yet un-capped). Each entry needs a comment saying why and when it can go.
 - **Commits**: Conventional Commits (`feat:`, `fix:`, `refactor:`, `chore:`); no attribution in commit messages. Releases use `git-cliff` (see `cliff.toml`).
 
 ## Repository layout
