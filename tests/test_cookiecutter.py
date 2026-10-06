@@ -2,7 +2,12 @@
 
 # %% IMPORTS
 
+import json
+import os
+from pathlib import Path
+
 from pytest_cookies.plugin import Cookies
+from pytestshellutils.customtypes import EnvironDict
 from pytestshellutils.shell import Subprocess
 
 # %% COMMANDS
@@ -20,8 +25,13 @@ COMMANDS = [
     "git init",
     "mise run clean",
     "mise run install",
+    # Stage the fresh project so the diff below catches any file the gate rewrites.
+    "git add --all",
     # The generated project's own gate: format, check, test, and build in one task.
     "mise run all",
+    # Mirrors the generated CI's "Verify no changes" step: a template file the formatters
+    # would rewrite fails every new project's first push, even though `mise run all` passes.
+    "git diff --exit-code",
     "mise run docs",
     "mise run project",
     "mise run build:image",
@@ -34,14 +44,16 @@ COMMANDS = [
 def test_project_generation(cookies: Cookies) -> None:
     """Test the generation of the project."""
     # given
+    # Toolchain versions come from cookiecutter.json, so the bake always proves the defaults users get.
+    defaults = json.loads((Path(__file__).parents[1] / "cookiecutter.json").read_text(encoding="utf-8"))
     context = {
         "user": "tester",
         "name": "MLOps 123",
         "version": "1.0.0",
         "year": "2026",
         "description": "A test project.",
-        "python_version": "3.14",
-        "mlflow_version": "3.15.1",
+        "python_version": defaults["python_version"],
+        "mlflow_version": defaults["mlflow_version"],
     }
     repository = context["name"].lower().replace(" ", "-")
     package = repository.replace("-", "_")
@@ -67,7 +79,13 @@ def test_project_generation(cookies: Cookies) -> None:
         "_copy_without_render": ["cliff.toml"],
     }
     # - commands
-    shell = Subprocess(cwd=result.project_path)
+    # Run as a user would in a fresh checkout: `uv run pytest` exports this harness's
+    # VIRTUAL_ENV, which uv in the generated project would warn about and ignore. The
+    # bake lives in a temporary directory, usually on another filesystem than the uv
+    # cache, so copy instead of failing to hardlink and warning on every sync.
+    environ = EnvironDict({key: value for key, value in os.environ.items() if key != "VIRTUAL_ENV"})
+    environ["UV_LINK_MODE"] = "copy"
+    shell = Subprocess(cwd=result.project_path, environ=environ)
     for command in COMMANDS:
         result = shell.run(*command.split())
         assert result.returncode == 0, f"Command failed: {command}"
