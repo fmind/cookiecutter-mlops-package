@@ -14,7 +14,8 @@ pre-commit:
     format:python:
       priority: 10
       glob: "*.py"
-      run: mise run format:python {staged_files}
+      # Ruff must discover exclusions before it encounters raw Jinja paths.
+      run: mise run format:python
       stage_fixed: true
     check:leaks:
       priority: 20

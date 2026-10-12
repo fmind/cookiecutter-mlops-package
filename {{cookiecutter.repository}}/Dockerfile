@@ -10,7 +10,7 @@ ENV UV_PYTHON=/usr/local/bin/python3
 ENV UV_PYTHON_DOWNLOADS=never
 WORKDIR /app
 # Pinned, not `:latest` — a floating tag is invisible to Dependabot's docker ecosystem.
-COPY --from=ghcr.io/astral-sh/uv:0.12.23 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.0 /uv /uvx /bin/
 RUN --mount=type=cache,target=/root/.cache/uv \
   --mount=type=bind,source=uv.lock,target=uv.lock \
   --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
@@ -22,6 +22,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 FROM python:{{cookiecutter.python_version}}-slim
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
+# Dependencies are installed in the build stage; omit unused installation tooling.
+RUN PIP_ROOT_USER_ACTION=ignore python -m pip uninstall --yes pip \
+  && python -c "import ensurepip, pathlib, shutil; shutil.rmtree(pathlib.Path(ensurepip.__file__).parent)"
 # Fixed numeric uid/gid: stable file ownership across rebuilds and bind mounts, and
 # resolvable by a host that does not share this image's /etc/passwd.
 RUN groupadd -g 10001 app && useradd -u 10001 -g app -m app

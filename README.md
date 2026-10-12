@@ -26,9 +26,9 @@ You have the freedom to structure your `src/` and `tests/` directories according
 - **One task vocabulary**: [mise](https://mise.jdx.dev/) defines `install`, `format`, `check`, `test`, `build`, and the `all` gate. Git hooks, CI, and you run the exact same commands — there is no second definition to keep in sync.
 - **Fast, single-tool Python stack**: [uv](https://docs.astral.sh/uv/) for dependencies and packaging, [Ruff](https://docs.astral.sh/ruff/) for linting and formatting (its `S`/bandit rules replace a separate security linter), and [ty](https://github.com/astral-sh/ty) for type checking.
 - **Security in the gate, not beside it**: [pip-audit](https://pypi.org/project/pip-audit/) for dependency CVEs, [gitleaks](https://github.com/gitleaks/gitleaks) for secrets, [Trivy](https://trivy.dev/) for the whole checkout, [hadolint](https://github.com/hadolint/hadolint) for the image, and [actionlint](https://github.com/rhysd/actionlint) + [zizmor](https://docs.zizmor.sh/) for the workflows.
-- **Tested by generation, not by inspection**: `mise run test` bakes a real project into a temporary directory and runs that project's own gate — format, check, test, build, docs, Docker image, and MLflow jobs.
-- **MLflow on a real store**: tracking and the model registry use a SQLite database (`sqlite:///mlflow.db`), the SQLAlchemy backend MLflow 3 defaults to and the only local store the model registry was designed for.
-- **Container and CI/CD included**: a multi-stage, non-root [Docker](https://www.docker.com/) image, plus [GitHub Actions](https://github.com/features/actions) workflows for the gate (`ci.yml`), the release (`cd.yml`: [pdoc](https://pdoc.dev/) docs to GitHub Pages and the image to GHCR), and a weekly full-history security rescan (`security.yml`).
+- **Tested by generation, not by inspection**: `mise run test` bakes a real project into a temporary directory and runs that project's own gate — format, check, test, build, docs, Docker image, and MLflow Projects CLI invocations.
+- **MLflow on a real store**: tracking and the model registry use a SQLite database (`sqlite:///mlflow.db`), the SQLAlchemy backend MLflow 3 defaults to and a supported local database store for tracking and registry metadata.
+- **Container and CI/CD included**: a multi-stage, non-root [Docker](https://www.docker.com/) image, plus [GitHub Actions](https://github.com/features/actions) workflows for the gate (`ci.yml`), the release (`cd.yml`: the complete gate, [pdoc](https://pdoc.dev/) docs to GitHub Pages, and a scanned image digest promoted to GHCR release tags), and a weekly full-history security rescan (`security.yml`).
 - **Maintained by default**: [Dependabot](https://docs.github.com/en/code-security/dependabot) groups minor and patch bumps per ecosystem, [lefthook](https://lefthook.dev/) runs the gate before every commit and push, and [git-cliff](https://git-cliff.org/) turns Conventional Commits into a changelog.
 
 ## Quick Start
@@ -49,7 +49,7 @@ You'll be prompted for the following variables:
 - `year`: The copyright year written into `LICENSE.txt`.
 - `description`: A brief description of your project.
 - `python_version`: The Python version to use (e.g., 3.14). It drives `requires-python`, the Ruff target, the ty environment, `.python-version`, and the Docker base image at once.
-- `mlflow_version`: The MLflow version to use (e.g., 3.16.1).
+- `mlflow_version`: The MLflow version to use (e.g., 3.17.0).
 
 The generated project is MIT-licensed. To use another license, replace `LICENSE.txt` and the `license` field in `pyproject.toml` — the template does not ship alternative license texts, so there is no prompt for it.
 
@@ -79,7 +79,7 @@ mise run install  # sync the virtualenv (uv) and install git hooks (lefthook)
 
 ```bash
 mise run all      # the gate: format, check, test, build
-mise run project  # run every MLflow job
+mise run project  # invoke the MLflow CLI scaffolds
 mise tasks        # list everything else
 ```
 
@@ -93,7 +93,7 @@ mise run install  # sync the virtualenv and install git hooks
 mise run all      # format, check, and test the harness
 ```
 
-`mise run test` is the real proof: it bakes a project into a temporary directory and runs the generated project's own gate inside it, including a Docker build and MLflow jobs. It takes several minutes and needs `docker` running.
+`mise run test` is the real proof: it bakes a project into a temporary directory and runs the generated project's own gate inside it, including a Docker build and MLflow Projects CLI invocations. It takes several minutes and needs `docker` running.
 
 Keep the template in sync with the reference implementation, [mlops-python-package](https://github.com/fmind/mlops-python-package): shared configuration files should differ only by their cookiecutter variables. See [`AGENTS.md`](AGENTS.md) for the conventions that keep both layers honest.
 
@@ -106,3 +106,13 @@ Feel free to open [issues](https://github.com/fmind/cookiecutter-mlops-package/i
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/license/mit). See the [`LICENSE.txt`](https://github.com/fmind/cookiecutter-mlops-package/blob/main/LICENSE.txt) file for details.
+
+## Scaffold boundary
+
+The generated CLI accepts and logs configuration paths; it does not load data, train a model, or run the YAML jobs yet. Implement that logic in `src/<package>/scripts.py`, using [mlops-python-package](https://github.com/fmind/mlops-python-package) as the working example. The bake test proves generation, the CLI, MLflow Projects invocation, documentation, and build integration. It does not certify model training or deployment.
+
+Start the local tracking server with `mise run docker:compose`, which initializes SQLite first. Before using `docker compose up` directly, run `mise run mlflow:db`.
+
+When implementing the model workflow, follow the reference package’s `PipelineJob`: pass selected parameters into training, evaluate its exact registered version, and promote only after thresholds pass. Keep prediction schemas limited to features available at serving time. The generated task remains a CLI scaffold until this logic is implemented.
+
+The release image gate checks vulnerabilities, secrets and misconfigurations. It records license classifications separately: the Debian base includes reciprocal licenses that require an inventory, rather than a blanket license prohibition.

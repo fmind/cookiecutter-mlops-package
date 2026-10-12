@@ -36,12 +36,12 @@ All work goes through `mise`; git hooks (`lefthook.yml`) and CI run the same tas
 - `mise run test` — run the test suite with coverage (`pytest`); `mise run test:parallel` skips the coverage gate for a faster loop.
 - `mise run build` — build the wheel + sdist (`uv build`); `mise run build:image` builds the Docker image.
 - `mise run docs` — generate the API documentation (`pdoc`).
-- `mise run project` — run every MLflow job; `mise run project:run <name>` runs one (`confs/<name>.yaml`).
+- `mise run project` — invoke the MLflow CLI scaffolds; `mise run project:run <name>` runs one (`confs/<name>.yaml`).
 - `mise tasks` — list everything else.
 
 ## MLflow
 
-Tracking and the model registry run on a local SQLite database (`sqlite:///mlflow.db`), which is what MLflow 3 defaults to and the only local store the model registry was designed for. Artifacts stay on disk.
+Tracking and the model registry use a local SQLite database (`sqlite:///mlflow.db`). The legacy file store is in maintenance mode and disabled by default in the supported MLflow version. Artifacts stay on disk.
 
 ```bash
 mise run mlflow:serve   # browse runs at http://127.0.0.1:5000
@@ -53,8 +53,20 @@ Copy `.env.example` to `.env` and point `MLFLOW_TRACKING_URI` at a real database
 ## GitHub setup
 
 - **Branch protection**: `mise run install:rulesets` applies `.github/rulesets/main.json`. It requires the `checks` status check, which is the job name in `ci.yml`; rename both or neither. The task is idempotent — re-running it updates the existing ruleset instead of creating a duplicate.
-- **Documentation hosting**: go to **Settings → Pages** and set **Source** to **GitHub Actions**. `cd.yml` deploys through the `github-pages` environment with `actions/deploy-pages`; it does not push to a `gh-pages` branch, so it needs no write permission on the repository contents.
+- **Documentation hosting**: go to **Settings → Pages** and set **Source** to **GitHub Actions**. The release workflow runs the complete gate, scans a candidate image by immutable digest before assigning release tags, and deploys docs through the `github-pages` environment with `actions/deploy-pages`; it does not push to a `gh-pages` branch, so it needs no write permission on the repository contents.
 
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/license/mit). See [`LICENSE.txt`](LICENSE.txt) for details.
+
+# Scaffold boundary
+
+The generated CLI accepts and logs configuration paths; it does not load data, train a model, or run the YAML jobs yet. Implement that logic in `src/<package>/scripts.py`, using [mlops-python-package](https://github.com/fmind/mlops-python-package) as the working example. The bake test proves generation, the CLI, MLflow Projects invocation, documentation, and build integration. It does not certify model training or deployment.
+
+Start the local tracking server with `mise run docker:compose`, which initializes SQLite first. Before using `docker compose up` directly, run `mise run mlflow:db`.
+
+`mise run clean` removes caches and build outputs while preserving MLflow databases, run artifacts, and predictions. Back up experiment state before any deliberate manual reset.
+
+The runtime image contains the installed package and locked dependencies, with pip and its bootstrap wheels removed. Rebuild the image to change dependencies.
+
+When implementing the model workflow, follow the reference package’s `PipelineJob`: pass selected parameters into training, evaluate its exact registered version, and promote only after thresholds pass. Keep prediction schemas limited to features available at serving time. The generated task remains a CLI scaffold until this logic is implemented.

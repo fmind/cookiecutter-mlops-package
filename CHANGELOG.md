@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [6.1.1] - 2026-10-12
+
+- Keep staged raw Jinja paths out of Ruff configuration discovery in commit hooks.
+- Update both locked toolchains and validate rendered metadata, generation and configuration.
+- Keep the generated CLI scaffold explicit; document the path to implementing a connected model workflow.
+- Run the complete release gate and scan candidate image digests before promoting release tags.
+
 ## [6.1.0] - 2026-10-06
 
 ### 🚀 Features

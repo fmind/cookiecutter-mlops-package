@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 
+import pytest
 from pytest_cookies.plugin import Cookies
 from pytestshellutils.customtypes import EnvironDict
 from pytestshellutils.shell import Subprocess
@@ -51,7 +52,7 @@ def test_project_generation(cookies: Cookies) -> None:
         "name": "MLOps 123",
         "version": "1.0.0",
         "year": "2026",
-        "description": "A test project.",
+        "description": 'Predict "bike" 🚲 demand from C:\\data.',
         "python_version": defaults["python_version"],
         "mlflow_version": defaults["mlflow_version"],
     }
@@ -89,3 +90,19 @@ def test_project_generation(cookies: Cookies) -> None:
     for command in COMMANDS:
         result = shell.run(*command.split())
         assert result.returncode == 0, f"Command failed: {command}"
+
+
+@pytest.mark.parametrize(
+    "context",
+    [
+        {"package": "invalid-package"},
+        {"package": "class"},
+        {"package": "\uff58"},
+        {"repository": "invalid/path"},
+        {"python_version": "3.x"},
+    ],
+)
+def test_invalid_generation_context(cookies: Cookies, context: dict[str, str]) -> None:
+    result = cookies.bake(extra_context=context)
+    assert result.exit_code != 0
+    assert result.exception is not None

@@ -41,5 +41,9 @@ A change is complete only when, locally, `mise run all` passes warning-free and 
 - `src/{{cookiecutter.package}}/` — package: `scripts.py` (CLI entry point), `__main__.py`, `__init__.py`. Add `core/`, `io/`, `jobs/`, `utils/` modules as the project grows.
 - `confs/` — one config file per MLflow job; `tests/` — `pytest` suite mirroring `src/` with fixtures in `conftest.py`.
 - `pyproject.toml` — dependencies and `ruff`/`ty`/`pytest` config; `mise.toml`/`mise.lock` — tasks and pinned, locked tools; `lefthook.yml` — git hooks; `dprint.jsonc`/`trivy.yaml`/`cliff.toml` — formatter, scanner, changelog config.
-- `.github/` — `workflows/` (`ci.yml` runs `mise run all`, `cd.yml` publishes docs and the image, `security.yml` rescans the full history weekly), `dependabot.yml`, `rulesets/main.json`. The `ci.yml` job is named `checks` because `rulesets/main.json` requires that status check context; rename both or neither.
+- `.github/` — `workflows/` (`ci.yml` runs `mise run all`, `cd.yml` runs the gate before publishing docs and promotes a scanned image digest, `security.yml` rescans the full history weekly), `dependabot.yml`, `rulesets/main.json`. The `ci.yml` job is named `checks` because `rulesets/main.json` requires that status check context; rename both or neither.
 - `Dockerfile`/`docker-compose.yml`/`MLproject` — container image, local MLflow server, and MLflow Projects reproducible runs (`--env-manager=local` reuses the uv environment, so there is no `python_env.yaml`).
+
+## Scaffold boundary
+
+The generated CLI logs config paths and exits; it is a starting point for an application, not an implemented model pipeline. Keep that boundary explicit in documentation and bake-test assertions. `docker:compose` initializes SQLite with `mlflow:db` before mounting the file.

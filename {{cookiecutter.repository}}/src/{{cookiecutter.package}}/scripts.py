@@ -8,7 +8,7 @@ from loguru import logger
 
 # %% PARSERS
 
-parser = argparse.ArgumentParser(description="Run an AI/ML job from YAML/JSON configs.")
+parser = argparse.ArgumentParser(description="CLI scaffold: accepts config paths; implement your job runner here.")
 parser.add_argument("files", nargs="*", help="Config files for the job (local paths only).")
 
 # %% SCRIPTS
@@ -24,5 +24,5 @@ def main(argv: list[str] | None = None) -> int:
         The exit code of the application (0 on success).
     """
     args = parser.parse_args(argv)
-    logger.info("Running job with configs: {}", args.files)
+    logger.info("Scaffold received config paths: {}. Implement job execution in main().", args.files)
     return 0

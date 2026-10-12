@@ -5,7 +5,7 @@
 
 [project]
 name = "cookiecutter-mlops-package"
-version = "6.1.0"
+version = "6.1.1"
 description = "Build and deploy Python packages and Docker images for MLOps projects."
 authors = [{ name = "Médéric HURIER", email = "github@fmind.dev" }]
 readme = "README.md"
@@ -39,7 +39,7 @@ package = false
 line-length = 120
 target-version = "py314"
 # Skip the cookiecutter template sources (raw Jinja is not valid Python).
-extend-exclude = ["[{][{]cookiecutter.repository[}][}]"]
+extend-exclude = ["[{][{]cookiecutter.repository[}][}]", "hooks"]
 
 [tool.ruff.format]
 docstring-code-format = true
