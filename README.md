@@ -29,7 +29,7 @@ You have the freedom to structure your `src/` and `tests/` directories according
 - **Tested by generation, not by inspection**: `mise run test` bakes a real project into a temporary directory and runs that project's own gate — format, check, test, build, docs, Docker image, and MLflow Projects CLI invocations.
 - **MLflow on a real store**: tracking and the model registry use a SQLite database (`sqlite:///mlflow.db`), the SQLAlchemy backend MLflow 3 defaults to and a supported local database store for tracking and registry metadata.
 - **Container and CI/CD included**: a multi-stage, non-root [Docker](https://www.docker.com/) image, plus [GitHub Actions](https://github.com/features/actions) workflows for the gate (`ci.yml`), the release (`cd.yml`: the complete gate, [pdoc](https://pdoc.dev/) docs to GitHub Pages, and a scanned image digest promoted to GHCR release tags), and a weekly full-history security rescan (`security.yml`).
-- **Maintained by default**: [Dependabot](https://docs.github.com/en/code-security/dependabot) groups minor and patch bumps per ecosystem, [lefthook](https://lefthook.dev/) runs the gate before every commit and push, and [git-cliff](https://git-cliff.org/) turns Conventional Commits into a changelog.
+- **Maintained by default**: [Dependabot](https://docs.github.com/en/code-security/dependabot) opens grouped security-fix pull requests while version updates stay off, [lefthook](https://lefthook.dev/) runs the gate before every commit and push, and [git-cliff](https://git-cliff.org/) turns Conventional Commits into a changelog.
 
 ## Quick Start
 
