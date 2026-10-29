@@ -11,7 +11,7 @@ The template provides a robust foundation for building, testing, packaging, and 
 - **[MLOps Coding Course (Learning)](https://mlops-coding-course.fmind.dev/)**: Learn how to create, develop, and maintain a state-of-the-art MLOps code base.
 - **[MLOps Python Package (Example)](https://github.com/fmind/mlops-python-package)**: Kickstart your MLOps initiative with a flexible, robust, and productive Python package.
 - **[LLMOps Coding Package (Example)](https://github.com/callmesora/llmops-python-package/)**: Example with best practices and tools to support your LLMOps projects.
-- **[Agent Skills (Resource)](https://github.com/MLOps-Courses/mlops-coding-skills)**: Enhance your AI Agents with standardized skills for MLOps and coding.
+- **[Agent Skills (Resource)](https://github.com/fmind/mlops-coding-skills)**: Enhance your AI Agents with standardized skills for MLOps and coding.
 
 ## Philosophy
 
